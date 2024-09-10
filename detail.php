@@ -6,7 +6,7 @@ include("funcs.php");
 $pdo = db_conn();
 
 //２．データ登録SQL作成
-$sql = "SELECT * FROM gs_an_table WHERE id=:id" ;
+$sql = "SELECT * FROM gs_an_table WHERE id=:id";
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':id', $id, PDO::PARAM_INT);  //Integer（数値の場合 PDO::PARAM_INT)
 $status = $stmt->execute();

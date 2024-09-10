@@ -12,7 +12,7 @@ $name   = $_POST["name"];
 $email  = $_POST["email"];
 $naiyou = $_POST["naiyou"];
 $age    = $_POST["age"];
-
+$id     = $_POST["id"];
 
 //2. DB接続します
 //*** function化する！  *****************
@@ -23,8 +23,8 @@ $pdo=db_conn();
 
 
 //３．データ登録SQL作成
-$sql = "UPDATE gs_an_table SET name =:name, email=:email, age =age, naiyo=naiyo WHERE id=:id"; 
-$stmt = $pdo->prepare($aql);
+$sql = "UPDATE gs_an_table SET name=:name, email=:email, age=:age, naiyo=:naiyo WHERE id=:id"; 
+$stmt = $pdo->prepare($sql);
 $stmt->bindValue(':name',   $name,   PDO::PARAM_STR);  //Integer（数値の場合 PDO::PARAM_INT)
 $stmt->bindValue(':email',  $email,  PDO::PARAM_STR);  //Integer（数値の場合 PDO::PARAM_INT)
 $stmt->bindValue(':age',    $age,    PDO::PARAM_INT);  //Integer（数値の場合 PDO::PARAM_INT)
@@ -34,19 +34,20 @@ $status = $stmt->execute(); //実行
 
 
 //４．データ登録処理後
+
+// if ($status === false) {
+//     $error = $stmt->errorInfo();
+//     exit('SQLError:' . print_r($error, true));
+// } else {
+//     header('Location: select.php');
+//     exit();
+// }
+
 if($status==false){
     //*** function化する！*****************
     sql_error($stmt);
-}else{
+    }else{
     //*** function化する！*****************
-
-        redirect("select.php");
+    redirect("select.php");
 }
-
-
-
-
-
-
-
 ?>
