@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <title>データ登録</title>
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <style>div{padding: 10px;font-size:16px;}</style>
+    <meta charset="UTF-8">
+    <title>ブックマーク</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+    <!-- Head[Start] -->
+    <header>
+        <nav>
+            <a href="select.php">データ一覧</a>
+        </nav>
+    </header>
+    <!-- Head[End] -->
 
-<!-- Head[Start] -->
-<header>
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-    <div class="navbar-header"><a class="navbar-brand" href="select.php">データ一覧</a></div>
-    </div>
-  </nav>
-</header>
-<!-- Head[End] -->
-
-<!-- Main[Start] -->
-<form method="POST" action="insert.php">
-  <div class="jumbotron">
-   <fieldset>
-    <legend>フリーアンケート</legend>
-     <label>名前：<input type="text" name="name"></label><br>
-     <label>Email：<input type="text" name="email"></label><br>
-     <label>年齢：<input type="text" name="age"></label><br>
-     <label><textArea name="naiyou" rows="4" cols="40"></textArea></label><br>
-     <input type="submit" value="送信">
-    </fieldset>
-  </div>
-</form>
-<!-- Main[End] -->
-
-
+    <!-- method, action, 各inputのnameを確認してください。  -->
+    <form method="POST" action="insert.php">
+        <fieldset>
+            <legend>ブックマーク</legend>
+            <div class="form-group">
+                <label for="book_name">書籍名</label>
+                <input type="text" id="book_name" name="book_name">
+            </div>
+            <div class="form-group">
+                <label for="book_url">書籍URL</label>
+                <input type="text" id="book_url" name="book_url">
+            </div>
+            <div class="form-group">
+                <label for="book_comment">書籍コメント</label>
+                <textarea id="book_comment" name="book_comment" rows="4"></textarea>
+            </div>
+            <input type="submit" value="送信">
+        </fieldset>
+    </form>
 </body>
+
 </html>

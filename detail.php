@@ -1,73 +1,85 @@
 <?php
-//１．PHP
-$id=$_GET["id"];
-///php
-include("funcs.php");
-$pdo = db_conn();
+
+/**
+ * [ここでやりたいこと]
+ * 1. クエリパラメータの確認 = GETで取得している内容を確認する
+ * 2. select.phpのPHP<?php ?>の中身をコピー、貼り付け
+ * 3. SQL部分にwhereを追加
+ * 4. データ取得の箇所を修正。
+ */
+
+$id = $_GET['id'];
+
+try {
+    $db_name = 'gs_db3'; //データベース名
+    $db_id = 'root'; //アカウント名
+    $db_pw = ''; //パスワード：MAMPは‘root’
+    $db_host = 'localhost'; //DBホスト
+    $pdo = new PDO('mysql:dbname=' . $db_name . ';charset=utf8;host=' . $db_host, $db_id, $db_pw);
+} catch (PDOException $e) {
+    exit('DB Connection Error:' . $e->getMessage());
+};
 
 //２．データ登録SQL作成
-$sql = "SELECT * FROM gs_an_table WHERE id=:id";
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(':id', $id, PDO::PARAM_INT);  //Integer（数値の場合 PDO::PARAM_INT)
+$stmt = $pdo->prepare('SELECT * FROM gs_an_table WHERE id=:id;');
+$stmt->bindValue(':id', $id, PDO::PARAM_INT);
 $status = $stmt->execute();
 
 //３．データ表示
-$values = "";
-if($status==false) {
-  sql_error($stmt);
-}
+if ($status === false) {
+    $error = $stmt->errorInfo();
+    exit('SQLError:' . print_r($error, true));
+};
 
-//全データ取得
-$v =  $stmt->fetch(); //PDO::FETCH_ASSOC[カラム名のみで取得できるモード]
-///$json = json_encode($values,JSON_UNESCAPED_UNICODE);
 ?>
 <!--
 ２．HTML
 以下にindex.phpのHTMLをまるっと貼り付ける！
-理由：入力項目は「登録/更新」はほぼ同じになるからです。
+(入力項目は「登録/更新」はほぼ同じになるから)
 ※form要素 input type="hidden" name="id" を１項目追加（非表示項目）
 ※form要素 action="update.php"に変更
 ※input要素 value="ここに変数埋め込み"
 -->
-
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <title>データ更新</title>
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <style>div{padding: 10px;font-size:16px;}</style>
+    <meta charset="UTF-8">
+    <title>ブックマーク</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+    <!-- Head[Start] -->
+    <header>
+        <nav>
+            <a href="select.php">データ一覧</a>
+        </nav>
+    </header>
+    <!-- Head[End] -->
 
-<!-- Head[Start] -->
-<header>
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-    <div class="navbar-header"><a class="navbar-brand" href="select.php">データ一覧</a></div>
-    </div>
-  </nav>
-</header>
-<!-- Head[End] -->
-
-<!-- Main[Start] -->
-<form method="POST" action="update.php">
-  <div class="jumbotron">
-   <fieldset>
-    <legend>フリーアンケート更新</legend>
-     <label>名前：<input type="text" name="name" value="<?=$v["name"]?>"></label><br>
-     <label>Email：<input type="text" name="email" value="<?=$v["email"]?>"></label><br>
-     <label>年齢：<input type="text" name="age" value="<?=$v["age"]?>"></label><br>
-     <label><textArea name="naiyou" rows="4" cols="40"><?=$v["naiyou"]?></textArea></label><br>
-     <input type="hidden" name="id" value="<?=$v["id"]?>">
-     <input type="submit" value="送信">
-    </fieldset>
-  </div>
-</form>
-<!-- Main[End] -->
-
-
+    <!-- method, action, 各inputのnameを確認してください。  -->
+    <form method="POST" action="update.php">
+        <fieldset>
+            <input type="hidden" name="id" value="<?= $id;?>" />
+            <?php while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) : ?>
+                <legend>ブックマーク</legend>
+                <div class="form-group">
+                    <label for="book_name">書籍名</label>
+                    <input type="text" id="book_name" name="book_name" value="<?= $result['book_name']; ?>">
+                </div>
+                <div class="form-group">
+                    <label for="book_url">書籍URL</label>
+                    <input type="text" id="book_url" name="book_url" value="<?= $result['book_url']; ?>">
+                </div>
+                <div class="form-group">
+                    <label for="book_comment">書籍コメント</label>
+                    <textarea id="book_comment" name="book_comment" rows="4" value="<?= $result['book_comment']; ?>"></textarea>
+                </div>
+                <input type="submit" value="更新">
+            <?php endwhile; ?>
+        </fieldset>
+    </form>
 </body>
+
 </html>
-
-
